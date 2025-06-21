@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import joblib
+import os
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 
@@ -23,8 +25,14 @@ y = data['strength']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-knn = KNeighborsClassifier(n_neighbors=3)
-knn.fit(X_train, y_train)
+MODEL_PATH = "password.joblib"
+
+if os.path.exists(MODEL_PATH):
+    knn = joblib.load(MODEL_PATH)
+else:
+    knn = KNeighborsClassifier(n_neighbors=3)
+    knn.fit(X_train, y_train)
+    joblib.dump(knn, MODEL_PATH)
 
 st.title("Klasifikasi Tingkat Keamanan Password")
 st.write("Menggunakan Algoritma KNN berdasarkan Pola Penulisan dan Kompleksitas")
